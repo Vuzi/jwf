@@ -1,0 +1,10 @@
+#include("header.vm")
+	#set( $foo = "Velocity" )
+	Hello $foo World!
+	
+	<ul>
+	#foreach($city in $cities)
+	   <li>$city</li>
+	#end
+	</ul>
+#include("footer.vm")

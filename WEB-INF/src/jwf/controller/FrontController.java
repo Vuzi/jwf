@@ -30,6 +30,11 @@ public class FrontController extends HttpServlet implements IFrontController {
 		rewriter = new Rewriter();
 		dispatcher = new Dispatcher();
 
+		// == Velocity test
+		// Login form
+		rewriter.addRule(new RewriteRule(URIroot + "/velocity", "GET|POST", "jwf.velocity.ActionVelocityTest"));
+		// == Velocity test
+		
 		// Login form
 		rewriter.addRule(new RewriteRule(URIroot + "/user/login", "GET|POST", "jwf.action.user.ActionUserLogin"));
 		
@@ -41,7 +46,7 @@ public class FrontController extends HttpServlet implements IFrontController {
 
 		// Search an user
 		rewriter.addRule(new RewriteRule(URIroot + "/user/search/(.+)", "POST", "jwf.action.user.ActionUserSearch", new String[] { "user-login" }));
-		
+		 
 		// Delete an user
 		rewriter.addRule(new RewriteRule(URIroot + "/user/delete/([0-9]+)", "POST", "jwf.action.user.ActionUserDelete", new String[] { "user-id" }));
 		
