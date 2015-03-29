@@ -12,7 +12,7 @@
 
     <servlet>
         <servlet-name>FrontController</servlet-name>
-        <servlet-class>jwf.controller.FrontController</servlet-class>
+        <servlet-class>test.FrontController</servlet-class>
     </servlet>
 
     <servlet-mapping>
