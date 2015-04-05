@@ -1,6 +1,5 @@
 {
-	"root" : "C:/Users/Vuzi/Desktop/JEE/workspace/VuziWebFramework/",
-	"URI"  : "/VuziWebFramework",
+	"root" : "C:/Users/Vuzi/Desktop/JEE/workspace/jwf/",
 	"actions" : [ "fr.vuzi.webframework.action.ActionDefault" ],
 	"velocity_priority" : {
 							"jwf.template.velocity.VelocityHeaderView" : true,
@@ -9,5 +8,5 @@
 								"__CURRENT__" : true
 							},
 							"jwf.template.velocity.VelocityFooterView" : true
-						  }
+						 }
 }
