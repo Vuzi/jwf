@@ -128,6 +128,7 @@ public class MainRenderer implements Lockable {
 			dispatcher.dispatch(context, action);
 
 		// Display in the response
+		context.getResponse().setCharacterEncoding("UTF-8");
 		context.getResponse().setContentType(renderer.getHttpType());
 		context.getResponseWriter().write(renderer.render(context));
 	}

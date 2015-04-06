@@ -21,7 +21,7 @@ public abstract class AAction implements IAction {
 	@Override
 	public boolean hasCredentials(String[] roles) {
 		String[] credentials = getCredentials();
-		
+
 		// Every element in roles must be in credentials
 		for(String credential : credentials) {
 			boolean found = false;

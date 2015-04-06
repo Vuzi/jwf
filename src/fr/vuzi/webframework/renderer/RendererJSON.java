@@ -2,6 +2,9 @@ package fr.vuzi.webframework.renderer;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import fr.vuzi.webframework.context.IContext;
 
@@ -82,6 +85,11 @@ public class RendererJSON implements IRenderer {
 				sb.append(" " + model + " ");
 			} else if(model.getClass().isArray()) {
 				return renderArray(model);
+			} else if(model.getClass().equals(Date.class)) {
+				// Java date
+				Date d = (Date) model;
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+				sb.append("\"" + df.format(d) + "\"");
 			} else {
 				// Other object
 				sb.append("{ ");
@@ -110,7 +118,7 @@ public class RendererJSON implements IRenderer {
 
 	@Override
 	public String getHttpType() {
-		return "application/json";
+		return "application/json; charset=UTF-8";
 	}
 	
 }

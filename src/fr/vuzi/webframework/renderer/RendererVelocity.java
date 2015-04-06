@@ -84,6 +84,6 @@ public class RendererVelocity implements IRenderer {
 	
 	@Override
 	public String getHttpType() {
-		return "text/html";
+		return "text/html; charset=UTF-8";
 	}
 }

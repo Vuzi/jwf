@@ -3,6 +3,7 @@ package fr.vuzi.webframework.context;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
@@ -89,6 +90,12 @@ public class Context implements IContext {
 	 * Initialization main function
 	 */
 	private void init() {
+		try {
+			request.setCharacterEncoding("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
 		fragments = new HashMap<String, String>();
 		properties = new HashMap<String, String[]>(request.getParameterMap());
 		files = new HashMap<String, File>();
@@ -112,7 +119,10 @@ public class Context implements IContext {
 			    for(FileItem item : items) {
 			    	if(item.isFormField()) {
 			    		// Form item
-			    		properties.put(item.getFieldName(), Utils.appendToArray(properties.get(item.getFieldName()), item.getString()));
+			    		String field = new String(item.getFieldName().getBytes(), "UTF-8");
+			    		String value =  new String(item.getString().getBytes(), "UTF-8");
+			    		
+			    		properties.put(field, Utils.appendToArray(properties.get(field), value));
 			    	} else {
 			    		if(item.getName() != null && !item.getName().isEmpty()) {
 				    		// File
@@ -227,8 +237,7 @@ public class Context implements IContext {
 
 	@Override
 	public void resetSession() {
-		// TODO Auto-generated method stub
-
+		request.getSession().invalidate();
 	}
 
 	@Override
@@ -243,7 +252,12 @@ public class Context implements IContext {
 
 	@Override
 	public String[] getUserCredentials() {
-		return (String[]) getSessionAttribute("user-cr");
+		String[] credentials = (String[]) getSessionAttribute("user-cr");
+		
+		if(credentials == null)
+			return new String[0];
+		else
+			return credentials;
 	}
 	
 	// ============ Response informations ============
