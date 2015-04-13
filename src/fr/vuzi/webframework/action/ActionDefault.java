@@ -12,6 +12,7 @@ public class ActionDefault extends AActionNoCredentials {
 	@Override
 	public void proceed() {
 		System.out.println("Default action proceeded");
+		System.out.println("Payload : " + getActionContext().getParameterUnique("payload"));
 	}
 
 	@Override

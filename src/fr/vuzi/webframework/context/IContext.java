@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface IContext {
 
+	public void init() throws Exception;
+	
 	// ============ Request context and values ============
 	
 	/**

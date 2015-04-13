@@ -116,6 +116,7 @@ public abstract class AFrontController extends HttpServlet {
 		Context context = new Context(request, response);    // Initialize the context
 		
 		try {
+			context.init();
 			IAction templateAction = rewriter.rewrite(context);  // Find the action template
 			
 			if(checkClass(templateAction)) {

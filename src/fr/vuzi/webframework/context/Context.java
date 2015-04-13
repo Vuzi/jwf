@@ -8,14 +8,19 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.DeserializationConfig.Feature;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
 import fr.vuzi.webframework.Utils;
 
@@ -80,8 +85,6 @@ public class Context implements IContext {
 	public Context(HttpServletRequest request, HttpServletResponse response) {
 		this.request = request;
 		this.response = response;
-		
-		init();
 	}
 
 	// ============ Context initialization ============
@@ -89,7 +92,7 @@ public class Context implements IContext {
 	/**
 	 * Initialization main function
 	 */
-	private void init() {
+	public void init() throws Exception {
 		try {
 			request.setCharacterEncoding("UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -97,7 +100,7 @@ public class Context implements IContext {
 		}
 		
 		fragments = new HashMap<String, String>();
-		properties = new HashMap<String, String[]>(request.getParameterMap());
+		properties = new HashMap<String, String[]>();
 		files = new HashMap<String, File>();
 
 		initProperties();
@@ -107,46 +110,51 @@ public class Context implements IContext {
 	/**
 	 * Initialize the properties according to all the given values (get, post, multipart)
 	 * and upload all the given files
+	 * @throws Exception 
+	 * @throws IOException 
 	 */
-	private void initProperties() {
+	private void initProperties() throws Exception {
 		long unixTime = System.currentTimeMillis() / 1000L;
 		
-		try {
-			if(ServletFileUpload.isMultipartContent(request)) {
-			    ServletFileUpload uploader = new ServletFileUpload(new DiskFileItemFactory());
-			    List<FileItem> items = uploader.parseRequest(request);
-			      
-			    for(FileItem item : items) {
-			    	if(item.isFormField()) {
-			    		// Form item
-			    		String field = new String(item.getFieldName().getBytes(), "UTF-8");
-			    		String value =  new String(item.getString().getBytes(), "UTF-8");
-			    		
-			    		properties.put(field, Utils.appendToArray(properties.get(field), value));
-			    	} else {
-			    		if(item.getName() != null && !item.getName().isEmpty()) {
-				    		// File
-				    		File f = new File(tmpFolder.getAbsolutePath() + "/" + item.getName() + unixTime);
-							
-				    		if(f.exists() || f.createNewFile()) {
-					    		item.write(f);
-					    		files.put(item.getName(), f);
-				    		}
+		if(ServletFileUpload.isMultipartContent(request)) {
+		    ServletFileUpload uploader = new ServletFileUpload(new DiskFileItemFactory());
+		    List<FileItem> items = uploader.parseRequest(request);
+		      
+		    for(FileItem item : items) {
+		    	if(!item.isFormField()) {
+		    		if(item.getName() != null && !item.getName().isEmpty()) {
+			    		// File
+			    		File f = new File(tmpFolder.getAbsolutePath() + "/" + item.getName() + unixTime);
+						
+			    		if(f.exists() || f.createNewFile()) {
+				    		item.write(f);
+				    		files.put(item.getName(), f);
 			    		}
-			    	}
-			    }
-			}
-		} catch (FileUploadException e) {
-			e.printStackTrace();
-			// TODO
-			//JwfErrorHandler.displayError(this, 500, "Error while uploading file : " + e.getMessage());
-		} catch (Exception e) {
-			e.printStackTrace();
-			// TODO
-			//JwfErrorHandler.displayError(this, 500, "Error while retrieving sand values : " + e.getMessage());
+		    		}
+		    	}
+		    }
+		} else {
+			// Ignore values, and get the values from the payload
+			getPropertiesFromJSON(IOUtils.toString(request.getReader()));
 		}
 	}
 	
+	private void getPropertiesFromJSON(String br) throws JsonParseException, IOException {
+		
+		if(br.trim().isEmpty())
+			return; // Ignore empty value
+		
+		ObjectMapper mapper = new ObjectMapper();
+	    mapper.configure(Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+	    
+	    HashMap<String, String[]> tmp = mapper.readValue(br, new TypeReference<HashMap<String, String[]>>(){});
+
+	    // Merge both arrays
+		for(Entry<String, String[]> entry : tmp.entrySet()) {
+			properties.put(entry.getKey(), Utils.appendToArray(properties.get(entry.getKey()), entry.getValue()));
+		}
+	}
+
 	/**
 	 * Initialize the renderer type of the request. The default type is HTML, but
 	 * if the value "type" is set in the properties (either manually in the
