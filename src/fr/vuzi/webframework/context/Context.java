@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +23,8 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import fr.vuzi.webframework.Utils;
 
@@ -90,6 +94,11 @@ public class Context implements IContext {
 	// ============ Context initialization ============
 	
 	/**
+	 * The basic auth regex
+	 */
+	private Pattern basicAuthPattern = Pattern.compile("Basic ([a-zA-Z0-9]+)");
+	
+	/**
 	 * Initialization main function
 	 */
 	public void init() throws Exception {
@@ -103,12 +112,36 @@ public class Context implements IContext {
 		properties = new HashMap<String, String[]>();
 		files = new HashMap<String, File>();
 
+		initAuth();
 		initProperties();
 		initRendererType();
 	}
 	
+	@Override
+	public void authentificate(String login, String password) throws Exception {}
+	
 	/**
-	 * Initialize the properties according to all the given values (get, post, multipart)
+	 * Initialize the basic authentication of the server
+	 */
+	private void initAuth() throws Exception {
+		String basicAuth = request.getHeader("Authorization");
+		
+		if(basicAuth != null) {
+			Matcher m = basicAuthPattern.matcher(basicAuth);
+			
+			if(m.matches()) {
+				String[] tmp = new String(Base64.decode(m.group(1))).split(":");
+				
+				if(tmp.length != 2)
+					return; // Malformed
+				
+				authentificate(tmp[0], tmp[1]);
+			}
+		}
+	}
+	
+	/**
+	 * Initialize the properties according to all the given values
 	 * and upload all the given files
 	 * @throws Exception 
 	 * @throws IOException 

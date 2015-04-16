@@ -113,18 +113,18 @@ public abstract class AFrontController extends HttpServlet {
 	 * @param response The servlet response
 	 */
 	protected void handle(HttpServletRequest request, HttpServletResponse response) {
-		Context context = new Context(request, response);    // Initialize the context
+		IContext context = createContext(request, response); // Initialize the context
 		
 		try {
 			context.init();
-			IAction templateAction = rewriter.rewrite(context);  // Find the action template
+			IAction templateAction = rewriter.rewrite(context); // Find the action template
 			
 			if(checkClass(templateAction)) {
 				if(checkCredentials(context, templateAction)) {
 					renderer.render(context);
 				} else {
 					// 403
-					errorHandle(context, 403, "you doesn't have the rights to view this page");
+					errorHandle(context, 403, "you don't have the credentials to view this page");
 				}
 				
 			} else {
@@ -157,5 +157,15 @@ public abstract class AFrontController extends HttpServlet {
 	 */
 	protected boolean checkCredentials(IContext context, IAction action) {
 		return action.hasCredentials(context.getUserCredentials());
+	}
+	
+	/**
+	 * Create the context for a request
+	 * @param request The request
+	 * @param response The response
+	 * @return The created context
+	 */
+	protected IContext createContext(HttpServletRequest request, HttpServletResponse response) {
+		return new Context(request, response);
 	}
 }

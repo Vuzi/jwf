@@ -188,5 +188,12 @@ public interface IContext {
 	 * @return The action classname, or null if never defined
 	 */
 	public String getActionClassname();
+	
+	/**
+	 * This method is called if the basic authentication is used on the server
+	 * @param login
+	 * @param password
+	 */
+	public void authentificate(String login, String password) throws Exception;
 }
 
