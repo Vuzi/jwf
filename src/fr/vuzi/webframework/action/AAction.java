@@ -55,4 +55,9 @@ public abstract class AAction implements IAction {
 	public IContext getActionContext() {
 		return context;
 	}
+
+	@Override
+	public boolean needRenderer() {
+		return true;
+	}
 }

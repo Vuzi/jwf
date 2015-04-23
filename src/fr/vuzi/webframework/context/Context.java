@@ -5,8 +5,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
@@ -151,18 +153,29 @@ public class Context implements IContext {
 		
 		if(ServletFileUpload.isMultipartContent(request)) {
 		    ServletFileUpload uploader = new ServletFileUpload(new DiskFileItemFactory());
-		    List<FileItem> items = uploader.parseRequest(request);
 		      
-		    for(FileItem item : items) {
+		    for(FileItem item : uploader.parseRequest(request)) {
 		    	if(!item.isFormField()) {
+		    		
+		    		// File
 		    		if(item.getName() != null && !item.getName().isEmpty()) {
-			    		// File
-			    		File f = new File(tmpFolder.getAbsolutePath() + "/" + item.getName() + unixTime);
-						
+		    			
+		    			// Generate file name
+		    			String filename = FilenameUtils.removeExtension(item.getName()) + unixTime;
+		    			String extension = FilenameUtils.getExtension(item.getName());
+		    			
+		    			byte hash[] = MessageDigest.getInstance("MD5").digest(filename.getBytes("UTF-8"));
+		    			filename = String.format("%032x", new BigInteger(1, hash)) + (extension.equals("") ? extension : "." + extension);
+
+		    			// Write temporary file
+			    		File f = new File(tmpFolder.getAbsolutePath() + "/" + filename);
+			    		
 			    		if(f.exists() || f.createNewFile()) {
 				    		item.write(f);
-				    		files.put(item.getName(), f);
+				    		files.put(item.getFieldName(), f);
 			    		}
+			    		
+			    		item.delete();
 		    		}
 		    	}
 		    }
@@ -255,14 +268,8 @@ public class Context implements IContext {
 	// ============ Uploaded files handling ============
 	
 	@Override
-	public File[] getUploadedFiles() {
-		File[] tmp = new File[files.size()];
-		int i = 0;
-		
-		for(File f : files.values()) {
-			tmp[i++] = f;
-		}
-		return tmp;
+	public Map<String, File> getUploadedFiles() {
+		return files;
 	}
 
 	@Override

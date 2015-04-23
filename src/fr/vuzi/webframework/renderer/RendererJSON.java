@@ -80,7 +80,7 @@ public class RendererJSON implements IRenderer {
 			} else if (model.getClass().equals(String.class)) {
 				// String
 				sb.append("\"" + model + "\"");
-			} else if (model.getClass().equals(Integer.class) || model.getClass().equals(Double.class) || model.getClass().equals(Boolean.class)) {
+			} else if (model.getClass().equals(Integer.class) || model.getClass().equals(Long.class) || model.getClass().equals(Double.class) || model.getClass().equals(Boolean.class)) {
 				// Numerical value
 				sb.append(" " + model + " ");
 			} else if(model.getClass().isArray()) {

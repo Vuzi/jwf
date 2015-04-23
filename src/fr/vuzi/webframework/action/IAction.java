@@ -69,4 +69,10 @@ public interface IAction extends Callable<Void>, Cloneable {
 	 * @return A new action instance
 	 */
 	public IAction cloneAction(IContext context);
+	
+	/**
+	 * If the action need to be rendered or not
+	 * @return True if the action needs to be rendered, false otherwise
+	 */
+	public boolean needRenderer();
 }

@@ -95,7 +95,7 @@ public interface IContext {
 	 * Return the uploaded files within this request context
 	 * @return The uploaded file list
 	 */
-	public File[] getUploadedFiles();
+	public Map<String, File> getUploadedFiles();
 	
 	/**
 	 * Remove the uploaded files
