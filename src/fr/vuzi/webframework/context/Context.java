@@ -193,12 +193,16 @@ public class Context implements IContext {
 		ObjectMapper mapper = new ObjectMapper();
 	    mapper.configure(Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 	    
-	    HashMap<String, String[]> tmp = mapper.readValue(br, new TypeReference<HashMap<String, String[]>>(){});
-
-	    // Merge both arrays
-		for(Entry<String, String[]> entry : tmp.entrySet()) {
-			properties.put(entry.getKey(), Utils.appendToArray(properties.get(entry.getKey()), entry.getValue()));
-		}
+	    try {
+		    HashMap<String, String[]> tmp = mapper.readValue(br, new TypeReference<HashMap<String, String[]>>(){});
+	
+		    // Merge both arrays
+			for(Entry<String, String[]> entry : tmp.entrySet()) {
+				properties.put(entry.getKey(), Utils.appendToArray(properties.get(entry.getKey()), entry.getValue()));
+			}
+	    } catch (Exception e) {
+	    	
+	    }
 	}
 
 	/**
