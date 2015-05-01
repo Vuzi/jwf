@@ -126,9 +126,9 @@ public class MainRenderer implements Lockable {
 		// Always dispatch the first action
 		if(context.getActionClassname() != null)
 			dispatcher.dispatch(context, action);
-
+		
 		// Display in the response
-		if(action != null && action.needRenderer()) {
+		if(action == null || (action != null && action.needRenderer())) {
 			context.getResponse().setCharacterEncoding("UTF-8");
 			context.getResponse().setContentType(renderer.getHttpType());
 			context.getResponseWriter().write(renderer.render(context));

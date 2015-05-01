@@ -98,7 +98,7 @@ public class Context implements IContext {
 	/**
 	 * The basic auth regex
 	 */
-	private Pattern basicAuthPattern = Pattern.compile("Basic ([a-zA-Z0-9]+)");
+	private Pattern basicAuthPattern = Pattern.compile("Basic ([a-zA-Z0-9=]+)");
 	
 	/**
 	 * Initialization main function
@@ -126,19 +126,23 @@ public class Context implements IContext {
 	 * Initialize the basic authentication of the server
 	 */
 	private void initAuth() throws Exception {
-		String basicAuth = request.getHeader("Authorization");
-		
-		if(basicAuth != null) {
-			Matcher m = basicAuthPattern.matcher(basicAuth);
+		try {
+			String basicAuth = request.getHeader("Authorization");
 			
-			if(m.matches()) {
-				String[] tmp = new String(Base64.decode(m.group(1))).split(":");
+			if(basicAuth != null) {
+				Matcher m = basicAuthPattern.matcher(basicAuth);
 				
-				if(tmp.length != 2)
-					return; // Malformed
-				
-				authentificate(tmp[0], tmp[1]);
+				if(m.matches()) {
+					String[] tmp = new String(Base64.decode(m.group(1))).split(":");
+					
+					if(tmp.length != 2)
+						return; // Malformed
+					
+					authentificate(tmp[0], tmp[1]);
+				}
 			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

@@ -113,6 +113,7 @@ public abstract class AFrontController extends HttpServlet {
 	 * @param response The servlet response
 	 */
 	protected void handle(HttpServletRequest request, HttpServletResponse response) {
+		//response.addHeader("Access-Control-Allow-Origin",  "*");
 		IContext context = createContext(request, response); // Initialize the context
 		
 		try {
