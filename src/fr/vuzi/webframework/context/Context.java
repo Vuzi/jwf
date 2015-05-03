@@ -84,6 +84,11 @@ public class Context implements IContext {
 	private String actionClassname;
 
 	/**
+	 * Response status
+	 */
+	private int status = 200;
+	
+	/**
 	 * Context default implementation constructor
 	 * @param request The request
 	 * @param response The response
@@ -361,4 +366,13 @@ public class Context implements IContext {
 		return actionClassname;
 	}
 
+	@Override
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	@Override
+	public int getStatus() {
+		return this.status;
+	}
 }

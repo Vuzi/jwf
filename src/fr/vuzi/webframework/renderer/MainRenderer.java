@@ -129,6 +129,7 @@ public class MainRenderer implements Lockable {
 		
 		// Display in the response
 		if(action == null || (action != null && action.needRenderer())) {
+			context.getResponse().setStatus(context.getStatus());
 			context.getResponse().setCharacterEncoding("UTF-8");
 			context.getResponse().setContentType(renderer.getHttpType());
 			context.getResponseWriter().write(renderer.render(context));

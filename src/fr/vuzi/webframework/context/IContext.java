@@ -195,5 +195,17 @@ public interface IContext {
 	 * @param password
 	 */
 	public void authentificate(String login, String password) throws Exception;
+
+	/**
+	 * Get the HTTP response status
+	 * @return The HTTP response status
+	 */
+	public int getStatus();
+	
+	/**
+	 * Set the HTTP response status
+	 * @param status
+	 */
+	public void setStatus(int status);
 }
 
