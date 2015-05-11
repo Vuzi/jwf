@@ -92,6 +92,19 @@ public class RewriteRule implements IRewriteRule {
 		init(regex, method, className, new String[0], rendererType);
 	}
 
+
+	/**
+	 * Rule constructor
+	 * @param regex URI regex
+	 * @param method Access method(s)
+	 * @param className Action class name
+	 * @param substitutions Substitutions
+	 * @param rendererType Renderer type override
+	 */
+	public RewriteRule(String regex, String method, String className, String[] substitutions, String rendererType) {
+		init(regex, method, className, substitutions, rendererType);
+	}
+
 	/**
 	 * Initialization method
 	 * @param regex URI regex

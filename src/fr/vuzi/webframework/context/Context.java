@@ -28,6 +28,7 @@ import org.codehaus.jackson.type.TypeReference;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
+import fr.vuzi.webframework.Configuration;
 import fr.vuzi.webframework.Utils;
 
 /**
@@ -47,6 +48,11 @@ public class Context implements IContext {
 	 * The servlet response
 	 */
 	private HttpServletResponse response;
+	
+	/**
+	 * Request address
+	 */
+	private String requestAddr;
 
 	/**
 	 * Properties hash map
@@ -118,6 +124,9 @@ public class Context implements IContext {
 		fragments = new HashMap<String, String>();
 		properties = new HashMap<String, String[]>();
 		files = new HashMap<String, File>();
+		
+
+		requestAddr = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + Configuration.URIroot + "/";
 
 		initAuth();
 		initProperties();
@@ -210,7 +219,7 @@ public class Context implements IContext {
 				properties.put(entry.getKey(), Utils.appendToArray(properties.get(entry.getKey()), entry.getValue()));
 			}
 	    } catch (Exception e) {
-	    	
+	    	e.printStackTrace();
 	    }
 	}
 
@@ -253,6 +262,12 @@ public class Context implements IContext {
 			return null;
 	}
 
+	@Override
+	public String getParameterUniqueOrElse(String key, String def) {
+		String val = getParameterUnique(key);
+		return val != null ? val : def;
+	}
+	
 	@Override
 	public void setParamater(String key, String[] values) {
 		properties.put(key, values);
@@ -374,5 +389,10 @@ public class Context implements IContext {
 	@Override
 	public int getStatus() {
 		return this.status;
+	}
+
+	@Override
+	public String getRequestAddr() {
+		return requestAddr;
 	}
 }

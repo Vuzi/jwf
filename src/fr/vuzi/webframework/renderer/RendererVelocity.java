@@ -43,7 +43,7 @@ public class RendererVelocity implements IRenderer {
 		}
 
 		// Reunite everything in the main view
-		return renderTemplate(context, "jwf.template.velocity.VelocityView");
+		return renderTemplate(context, "main");
 	}
 	
 	/**
@@ -67,9 +67,11 @@ public class RendererVelocity implements IRenderer {
 
 		// TODO : Singleton
         VelocityEngine ve = new VelocityEngine();
-        ve.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, Configuration.root + "/WEB-INF/templates");
+        ve.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, Configuration.root + "/WEB-INF/templates/");
+        ve.setProperty("input.encoding", "UTF-8");
+        ve.setProperty("output.encoding", "UTF-8");
         ve.init();
-		
+        
         // Add our context to the velocity context
 		VelocityContext vcontext = new VelocityContext();
 		vcontext.put("context", context);

@@ -34,6 +34,12 @@ public interface IContext {
 	public HttpServletResponse getResponse();
 	
 	/**
+	 * Return the request address, with the scheme, the name and the port
+	 * @return The request address
+	 */
+	public String getRequestAddr();
+	
+	/**
 	 * Get the parameter for a given key. Note that
 	 * multiple parameter can be defined for a single
 	 * key, as they are return in a string array. If no
@@ -52,6 +58,16 @@ public interface IContext {
 	 * @return A string containing the value, or null if not found
 	 */
 	public String getParameterUnique(String key);
+	
+	/**
+	 * Do the same things than getParameterUnique, but return a
+	 * default value of the parameter map does not contain
+	 * the given key
+	 * @param key The parameter key
+	 * @param def The default value
+	 * @return A string containing the value, or the provided value
+	 */
+	public String getParameterUniqueOrElse(String key, String def);
 
 	/**
 	 * Set a parameter value for a given key. If value are already present

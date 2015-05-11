@@ -103,9 +103,10 @@ public class MainRenderer implements Lockable {
 		} else
 			renderer = renderers.get(rendererType);
 		
-		if(renderer == null) // No renderer could be selected
+		if(renderer == null) { // No renderer could be selected
+			context.setRenderType(defaultType); // Try to force default
 			throw new Exception("No renderer type could be selected for this request");
-		else
+		} else
 			return renderer;
 	}
 	
