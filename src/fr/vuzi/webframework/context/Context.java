@@ -199,6 +199,7 @@ public class Context implements IContext {
 		    }
 		} else {
 			// Ignore values, and get the values from the payload
+			properties.putAll(request.getParameterMap());
 			getPropertiesFromJSON(IOUtils.toString(request.getReader()));
 		}
 	}
@@ -395,4 +396,11 @@ public class Context implements IContext {
 	public String getRequestAddr() {
 		return requestAddr;
 	}
+
+	@Override
+	public boolean supportEncoding(String encoding) {
+		String supported = getRequest().getHeader("Accept-Encoding");
+		return supported != null && supported.contains(encoding);
+	}
+	
 }

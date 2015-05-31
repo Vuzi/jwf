@@ -223,5 +223,12 @@ public interface IContext {
 	 * @param status
 	 */
 	public void setStatus(int status);
+	
+	/**
+	 * Return if the response supports the given compression
+	 * @param encoding The compression
+	 * @return True if supported, false otherwise
+	 */
+	public boolean supportEncoding(String encoding);
 }
 

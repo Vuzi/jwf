@@ -1,8 +1,11 @@
 package fr.vuzi.webframework.renderer;
 
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 import fr.vuzi.webframework.Lockable;
 import fr.vuzi.webframework.action.IAction;
@@ -31,6 +34,11 @@ public class MainRenderer implements Lockable {
 	 * Default renderer type, used when no type could be selected
 	 */
 	private String defaultType;
+	
+	/**
+	 * Charset used.
+	 */
+	private Charset charset = Charset.forName("UTF-8");
 	
 	/**
 	 * Constructor of the main renderer
@@ -131,9 +139,23 @@ public class MainRenderer implements Lockable {
 		// Display in the response
 		if(action == null || (action != null && action.needRenderer())) {
 			context.getResponse().setStatus(context.getStatus());
-			context.getResponse().setCharacterEncoding("UTF-8");
+			context.getResponse().setCharacterEncoding(charset.displayName());
 			context.getResponse().setContentType(renderer.getHttpType());
-			context.getResponseWriter().write(renderer.render(context));
+
+			String encoding = context.getRequest().getHeader("Accept-Encoding");
+
+			OutputStream out = context.getResponse().getOutputStream();
+			
+			// Compress if possible
+			if(encoding != null && encoding.contains("gzip")) {
+				context.getResponse().addHeader("Content-Encoding", "gzip");
+				out = new GZIPOutputStream(out);
+			}
+
+			// Write to the output
+			out.write(renderer.render(context).getBytes(charset));
+			out.flush();
+			out.close();
 		}
 	}
 	
