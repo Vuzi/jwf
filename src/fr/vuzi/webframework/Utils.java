@@ -1,5 +1,9 @@
 package fr.vuzi.webframework;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 
 /**
  * Utils class, used to store useful methods
@@ -60,5 +64,27 @@ public class Utils {
 			newtab[i + j] = toAdd[j];
 		
 		return newtab;
+	}
+	
+	private static SimpleDateFormat headerFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
+
+	public static String formatDate(Date d) {
+		return headerFormat.format(d);
+	}
+	
+	public static String formatDate(long l) {
+		return headerFormat.format(l);
+	}
+	
+	public static Date deformatDate(String s) {
+		if(s == null || s.isEmpty())
+			return new Date();
+		
+		try {
+			return headerFormat.parse(s);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Date();
+		}
 	}
 }
