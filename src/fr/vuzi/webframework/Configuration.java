@@ -1,6 +1,5 @@
 package fr.vuzi.webframework;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,11 +24,6 @@ public class Configuration {
 	public static String URIroot = "/default/";
 	
 	/**
-	 * Root path
-	 */
-	public static File root = new File("default");
-	
-	/**
 	 * Velocity rendering order
 	 */
 	public static Map<Integer, List<String>> velocityRenderingOrder;
@@ -41,10 +35,10 @@ public class Configuration {
 	 */
 	private Configuration() {}
 	
-	public static void initWithConfigurationFile(File configurationFile) throws Exception {
+	public static void initWithConfigurationFile() throws Exception {
 
 		JsonFactory jfactory = new JsonFactory();
-		JsonParser jParser = jfactory.createJsonParser(configurationFile);
+		JsonParser jParser = jfactory.createJsonParser(jfactory.getClass().getClassLoader().getResource("../conf/conf.json").openStream());
 		JsonToken token;
 		
 		while((token = jParser.nextToken()) != null) {

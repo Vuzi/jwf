@@ -1,7 +1,5 @@
 package fr.vuzi.webframework.controller;
 
-import java.io.File;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,12 +40,9 @@ public abstract class AFrontController extends HttpServlet {
 	@Override
 	public void init() {
 		// -- Configuration file --
-		Configuration.root = new File(getRootDirectory());
-		
 		try {
-			Configuration.initWithConfigurationFile(new File(Configuration.root + "/WEB-INF/conf/conf.json"));
+			Configuration.initWithConfigurationFile();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -80,13 +75,6 @@ public abstract class AFrontController extends HttpServlet {
 	 * renderer. By default, there is no renderers
 	 */
 	protected abstract void initRenderers();
-	
-	/**
-	 * Return the root directory. This value is used to initialize the configuration and find
-	 * resources and the configuration file
-	 * @return The root directory path
-	 */
-	protected abstract String getRootDirectory();
 	
 	/**
 	 * Called when an error occurred, and should handle the error

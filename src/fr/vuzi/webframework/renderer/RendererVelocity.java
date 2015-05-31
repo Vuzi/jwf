@@ -67,7 +67,7 @@ public class RendererVelocity implements IRenderer {
 
 		// TODO : Singleton
         VelocityEngine ve = new VelocityEngine();
-        ve.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, Configuration.root + "/WEB-INF/templates/");
+        ve.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, this.getClass().getClassLoader().getResource("/../templates/").getFile());
         ve.setProperty("input.encoding", "UTF-8");
         ve.setProperty("output.encoding", "UTF-8");
         ve.init();
